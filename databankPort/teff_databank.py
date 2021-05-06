@@ -44,7 +44,7 @@ def teff_calculator_databank(topology, trajectory, lipid_type, residue_ids, op_l
 
     # getting the time stamps for each frame
     time_axis = np.array([i * u.trajectory.dt for i in range(0, nframes_half)])
-    
+
 
     for lipid in residue_ids:
 
@@ -79,7 +79,7 @@ def teff_calculator_databank(topology, trajectory, lipid_type, residue_ids, op_l
             else:
                 out, times = [correlation_times[:,j-1], time_axis]
                 fvals = np.concatenate((fvals, np.asmatrix(out).T), axis=1)
-            Teff, tau_eff_area, R1, conv = calc_corrtime_noread(out, times, resops[j - 2])
+            Teff, tau_eff_area, R1, conv = calc_corrtime_noread(out, times, resops[j - 1])
             Teffs.append(Teff)
             Teffs_area.append(tau_eff_area)
             R1s.append(R1)
