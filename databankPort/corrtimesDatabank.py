@@ -158,20 +158,18 @@ def calc_corrtime_withee(times, mean, std, OP, deltaOP):
 
     return float(tau_eff_mean), float(tau_eff_min), float(tau_eff_max)
 
-def calc_tau(trajectory, atom1, atom2):
+def calc_tau(nframes, trajectory, atom1, atom2):
 
-    nframes = trajectory.n_frames
+    
     nframes_half = np.int(np.floor(nframes/2));
 
-    atom1_coor = np.zeros((nframes, 3))
-    atom2_coor = np.zeros((nframes, 3))
-
+    norm_coor = np.zeros((nframes, 3))
     for i in range(0,nframes):
-        atom1_coor[i,:] = trajectory[i][atom1]
-        atom2_coor[i,:] = trajectory[i][atom2]
 
+        norm_coor[i,:] = (trajectory[i][atom1] - trajectory[i][atom2]) / np.linalg.norm(trajectory[i][atom1] - trajectory[i][atom2])
 
-    res= calc_tau_fast(nframes, atom1_coor, atom2_coor)
+    #res = calc_tau_fast(nframes, atom1_coor, atom2_coor)
+    res = calc_tau_faster(nframes, norm_coor)
     #print(res)
     return res
 
@@ -198,8 +196,25 @@ def calc_tau_fast(nframes,atom1_coor,atom2_coor):
 
         corr[tau] = tmp/w # correlation function at a given lag time tau for a given atom pair atom1 atom2
 
-    #print(corr)
+    print(corr)
     return corr # correlation function for all possible tau for a given atom pair atom1/atom2
+
+
+def calc_tau_faster(nframes, atom_coor):
+
+    nframes_half = np.int(np.floor(nframes/2))
+    corr = np.zeros((nframes_half))
+
+    #coor = (atom1_coor - atom2_coor) / np.linalg.norm(atom1_coor - atom2_coor, axis = 1)[:,None]
+
+
+    for tau in range(0, nframes_half):
+
+        res = np.einsum('ij,ij->i', atom_coor[0:nframes-tau,:], atom_coor[tau:nframes,:])
+
+        corr[tau] = np.sum( p2(res)/(nframes-tau) )
+
+    return corr
 
 @jit(nopython=True)
 def p2(x):

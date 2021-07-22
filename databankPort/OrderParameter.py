@@ -82,8 +82,8 @@ class OrderParameter:
             resnr=atoms[0].resid
             d=math.sqrt(d2)
             warnings.warn("Atomic distance for atoms \
-            {at1} and {at2} in residue no. {resnr} is suspiciously \
-            long: {d}!\nPBC removed???")
+            %r and %r in residue no. %r is suspiciously \
+            long: %r!\nPBC removed???"%(at1,at2,resnr,d))
         cos2 = vec[2]**2/d2
         S = 0.5*(3.0*cos2-1.0)
         return S
