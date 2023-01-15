@@ -4,13 +4,14 @@
 
 # intended use #
 
-#teff_calculator_databank(topology, trajectory, lipid_type, residue_ids, op_list, write_directory, def_file, ID = 0)
+#teff_calculator_databank(topology, trajectory, dt, lipid_type, residue_ids, op_list, write_directory, def_file, ID = 0)
 
 ###############
 ###############
 ## IMPORTANT REMARKS ##
 # topology = topology file for MDAnalysis (psf, tpr, top, pdb, gro, ...)
 # trajectory = trajectory file for MDAnalysis
+# dt = saving frequency in ps
 # lipid_type = name of the lipid molecules, i.e. POPC. this is used later to save files with proper naming
 # residue_ids = zero-based list of the lipid_type
 # op_list = a numpy array that contains the label, atom1, atom2 for a given order parameter
@@ -25,12 +26,12 @@ import warnings
 from corrtimesDatabank import *
 import time
 
-def teff_calculator_databank(topology, trajectory, lipid_type, residue_ids, op_list, def_file, write_directory = './', ID = 0):
+def teff_calculator_databank(topology, trajectory, dt, lipid_type, residue_ids, op_list, def_file, write_directory = './', ID = 0):
 
     print('Starting the effective correlation times')
     start_time = time.time() # to get the performance now, could be removed
 
-    u = mda.Universe(topology, trajectory, in_memory = True)
+    u = mda.Universe(topology, trajectory, dt, in_memory = True)
     nframes = u.trajectory.n_frames
     # note that we only calculate the correlations upto lag_time = n_frames/2
     # this is hardcoded now, could be changed in the future
