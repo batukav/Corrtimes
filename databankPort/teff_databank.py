@@ -31,7 +31,7 @@ def teff_calculator_databank(topology, trajectory, dt, lipid_type, residue_ids, 
     print('Starting the effective correlation times')
     start_time = time.time() # to get the performance now, could be removed
 
-    u = mda.Universe(topology, trajectory, dt, in_memory = True)
+    u = mda.Universe(topology, trajectory, dt = dt, in_memory = True)
     nframes = u.trajectory.n_frames
     # note that we only calculate the correlations upto lag_time = n_frames/2
     # this is hardcoded now, could be changed in the future
